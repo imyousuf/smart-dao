@@ -31,6 +31,15 @@ public class IndexableObject extends AbstractGenericPersistentDTO<IndexableObjec
 
   private String clazzName;
   private byte[] serializedData;
+  private String operationName;
+
+  public String getOperationName() {
+    return operationName;
+  }
+
+  public void setOperationName(String operationName) {
+    this.operationName = operationName;
+  }
 
   public String getClazzName() {
     return clazzName;
