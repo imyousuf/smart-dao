@@ -47,9 +47,7 @@ public class CommonAsyncFreeTextPersistentDaoImpl<T> implements CommonFreeTextPe
   private final long updateScheduleInterval;
   private final long deleteScheduleInterval;
   private final ScheduledExecutorService scheduledExecutorService;
-  @Inject
-  @Named("primaryFreeTextPersistentDao")
-  private CommonFreeTextPersistentDao<T> primaryDao;
+  private final CommonFreeTextPersistentDao<T> primaryDao;
   @Inject(optional = true)
   private Class<T> clazz;
 
@@ -57,7 +55,8 @@ public class CommonAsyncFreeTextPersistentDaoImpl<T> implements CommonFreeTextPe
   public CommonAsyncFreeTextPersistentDaoImpl(@Named("saveInterval") long saveInterval,
                                               @Named("updateInterval") long updateInterval,
                                               @Named("deleteInterval") long deleteInterval,
-                                              @Named("intervalTimeUnit") TimeUnit timeUnit) {
+                                              @Named("intervalTimeUnit") TimeUnit timeUnit,
+                                              @Named("primaryFreeTextPersistentDao") CommonFreeTextPersistentDao<T> primaryDao) {
     saveQueue = new ConcurrentLinkedQueue<T>();
     updateQueue = new ConcurrentLinkedQueue<T>();
     deleteQueue = new ConcurrentLinkedQueue<T>();
@@ -65,6 +64,7 @@ public class CommonAsyncFreeTextPersistentDaoImpl<T> implements CommonFreeTextPe
     this.saveScheduleInterval = saveInterval;
     this.updateScheduleInterval = updateInterval;
     this.deleteScheduleInterval = deleteInterval;
+    this.primaryDao = primaryDao;
     initScheduledThreads(timeUnit);
 
   }
