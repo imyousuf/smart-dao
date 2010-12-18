@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -48,6 +49,7 @@ public class CommonAsyncFreeTextPersistentDaoImpl<T> implements CommonFreeTextPe
   private final long deleteScheduleInterval;
   private final ScheduledExecutorService scheduledExecutorService;
   private final CommonFreeTextPersistentDao<T> primaryDao;
+  private final ExecutorService executorService;
   @Inject(optional = true)
   private Class<T> clazz;
 
@@ -61,6 +63,7 @@ public class CommonAsyncFreeTextPersistentDaoImpl<T> implements CommonFreeTextPe
     updateQueue = new ConcurrentLinkedQueue<T>();
     deleteQueue = new ConcurrentLinkedQueue<T>();
     scheduledExecutorService = Executors.newScheduledThreadPool(3);
+    executorService = Executors.newCachedThreadPool();
     this.saveScheduleInterval = saveInterval;
     this.updateScheduleInterval = updateInterval;
     this.deleteScheduleInterval = deleteInterval;
@@ -124,18 +127,48 @@ public class CommonAsyncFreeTextPersistentDaoImpl<T> implements CommonFreeTextPe
   }
 
   @Override
-  public void save(T... data) {
+  public final void save(final T... data) {
+    executorService.submit(new Runnable() {
+
+      @Override
+      public void run() {
+        saveOps(data);
+      }
+    });
+  }
+
+  @Override
+  public final void update(final T... data) {
+    executorService.submit(new Runnable() {
+
+      @Override
+      public void run() {
+        updateOps(data);
+      }
+    });
+  }
+
+  @Override
+  public final void delete(final T... data) {
+    executorService.submit(new Runnable() {
+
+      @Override
+      public void run() {
+        deleteOps(data);
+      }
+    });
+  }
+
+  protected void saveOps(final T... data) {
     saveQueue.addAll(Arrays.asList(data));
   }
 
-  @Override
-  public void update(T... data) {
-    updateQueue.addAll(Arrays.asList(data));
+  protected void deleteOps(final T[] data) {
+    deleteQueue.addAll(Arrays.asList(data));
   }
 
-  @Override
-  public void delete(T... data) {
-    deleteQueue.addAll(Arrays.asList(data));
+  protected void updateOps(final T[] data) {
+    updateQueue.addAll(Arrays.asList(data));
   }
 
   public static class ArrayBuilder<P> {

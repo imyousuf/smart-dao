@@ -55,23 +55,20 @@ public class ConsistentAsyncFreeTextPersistentDaoImpl<T extends PersistentDTO> e
   }
 
   @Override
-  public void delete(T... data) {
+  protected void deleteOps(T[] data) {
     //TODO Save first
-    //Delegate
-    super.delete(data);
+    super.deleteOps(data);
   }
 
   @Override
-  public void save(T... data) {
+  protected void saveOps(T... data) {
     //TODO Save first
-    //Delegate
-    super.save(data);
+    super.saveOps(data);
   }
 
   @Override
-  public void update(T... data) {
+  protected void updateOps(T[] data) {
     //TODO Save first
-    //Delegate
-    super.update(data);
+    super.updateOps(data);
   }
 }
