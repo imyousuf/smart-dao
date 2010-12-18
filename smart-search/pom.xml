@@ -36,6 +36,7 @@
     <module>smart-dao-search</module>
     <module>solr-search-dao</module>
     <module>smart-abstract-dao-decorator</module>
+    <module>smart-dao-search-consistent-impl</module>
   </modules>
     <properties>
     <junit.version>4.8.1</junit.version>
