@@ -40,6 +40,15 @@ public class IndexableObjectId implements Externalizable, Comparable<IndexableOb
   private String agentName;
   private String appName;
   private String objectId;
+  private String opName;
+
+  public String getOpName() {
+    return opName;
+  }
+
+  public void setOpName(String opName) {
+    this.opName = opName;
+  }
 
   public String getAgentName() {
     return agentName;
@@ -76,7 +85,7 @@ public class IndexableObjectId implements Externalizable, Comparable<IndexableOb
   @Override
   public String toString() {
     return new StringBuilder(appName).append('|').append(agentName).append('|').append(className).append('|').append(
-        objectId).toString();
+        objectId).append('|').append(opName).toString();
   }
 
   public static IndexableObjectId fromString(String idString) throws Exception {
@@ -98,7 +107,7 @@ public class IndexableObjectId implements Externalizable, Comparable<IndexableOb
       throw new IOException("No content!");
     }
     String[] params = idString.split("|");
-    if (params == null || params.length != 4) {
+    if (params == null || params.length != 5) {
       throw new IOException(
           "Object should have been in the format globalNamespace:workspace-name:type-name!");
     }
@@ -106,6 +115,7 @@ public class IndexableObjectId implements Externalizable, Comparable<IndexableOb
     agentName = params[1];
     className = params[2];
     objectId = params[3];
+    opName = params[4];
   }
 
   @Override
